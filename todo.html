@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>To-Do Application</title>
+
+    <style>
+
+        *{
+            margin:0;
+            padding:0;
+            box-sizing:border-box;
+        }
+
+        body{
+            font-family:Arial, sans-serif;
+            background:linear-gradient(to right,#0f172a,#1e3a8a);
+            min-height:100vh;
+            display:flex;
+            justify-content:center;
+            align-items:center;
+            padding:30px;
+        }
+
+        .container{
+            width:500px;
+            background:white;
+            padding:30px;
+            border-radius:20px;
+            box-shadow:0px 5px 20px rgba(0,0,0,0.3);
+        }
+
+        h1{
+            text-align:center;
+            margin-bottom:25px;
+            color:#1e3a8a;
+        }
+
+        .input-section{
+            display:flex;
+            flex-direction:column;
+            gap:15px;
+        }
+
+        input{
+            padding:12px;
+            border:2px solid #1e3a8a;
+            border-radius:10px;
+            font-size:16px;
+        }
+
+        button{
+            padding:12px;
+            border:none;
+            background:#1e3a8a;
+            color:white;
+            border-radius:10px;
+            cursor:pointer;
+            transition:0.3s;
+            font-size:16px;
+        }
+
+        button:hover{
+            background:#2563eb;
+        }
+
+        ul{
+            list-style:none;
+            margin-top:25px;
+        }
+
+        li{
+            background:#f1f5f9;
+            margin-bottom:15px;
+            padding:15px;
+            border-radius:12px;
+        }
+
+        .task-header{
+            display:flex;
+            justify-content:space-between;
+            align-items:center;
+            margin-bottom:10px;
+        }
+
+        .task-name{
+            font-size:18px;
+            font-weight:bold;
+        }
+
+        .timer{
+            color:#1e3a8a;
+            font-weight:bold;
+        }
+
+        .buttons{
+            display:flex;
+            gap:10px;
+            margin-top:10px;
+        }
+
+        .done-btn{
+            background:green;
+        }
+
+        .done-btn:hover{
+            background:darkgreen;
+        }
+
+        .delete-btn{
+            background:red;
+        }
+
+        .delete-btn:hover{
+            background:darkred;
+        }
+
+        .completed{
+            text-decoration:line-through;
+            color:gray;
+        }
+
+        .status{
+            margin-top:8px;
+            font-weight:bold;
+            color:green;
+        }
+
+    </style>
+
+</head>
+
+<body>
+
+    <div class="container">
+
+        <h1>To-Do Application</h1>
+
+        <div class="input-section">
+
+            <input type="text" id="taskInput" placeholder="Enter Task Name">
+
+            <input type="number" id="timeInput" placeholder="Enter Time in Seconds">
+
+            <button onclick="addTask()">Add Task</button>
+
+        </div>
+
+        <ul id="taskList"></ul>
+
+    </div>
+
+    <script>
+
+        function addTask(){
+
+            let taskInput = document.getElementById("taskInput");
+            let timeInput = document.getElementById("timeInput");
+
+            let taskValue = taskInput.value;
+            let timeValue = timeInput.value;
+
+            if(taskValue === "" || timeValue === ""){
+                alert("Please enter task and timer");
+                return;
+            }
+
+            let li = document.createElement("li");
+
+            // Task Header
+
+            let headerDiv = document.createElement("div");
+            headerDiv.className = "task-header";
+
+            let taskName = document.createElement("span");
+            taskName.className = "task-name";
+            taskName.innerText = taskValue;
+
+            let timer = document.createElement("span");
+            timer.className = "timer";
+            timer.innerText = timeValue + " sec";
+
+            headerDiv.appendChild(taskName);
+            headerDiv.appendChild(timer);
+
+            // Buttons
+
+            let buttonDiv = document.createElement("div");
+            buttonDiv.className = "buttons";
+
+            let doneBtn = document.createElement("button");
+            doneBtn.innerText = "Done";
+            doneBtn.className = "done-btn";
+
+            let deleteBtn = document.createElement("button");
+            deleteBtn.innerText = "Delete";
+            deleteBtn.className = "delete-btn";
+
+            buttonDiv.appendChild(doneBtn);
+            buttonDiv.appendChild(deleteBtn);
+
+            // Status
+
+            let status = document.createElement("p");
+            status.className = "status";
+
+            // Timer Countdown
+
+            let remainingTime = parseInt(timeValue);
+
+            let interval = setInterval(function(){
+
+                remainingTime--;
+
+                timer.innerText = remainingTime + " sec";
+
+                if(remainingTime <= 0){
+
+                    clearInterval(interval);
+
+                    timer.innerText = "Time Over";
+
+                }
+
+            },1000);
+
+            // Done Button
+
+            doneBtn.onclick = function(){
+
+                clearInterval(interval);
+
+                taskName.classList.add("completed");
+
+                timer.innerText = "Completed";
+
+                status.innerText = "Task Done Successfully ✅";
+
+            };
+
+            // Delete Button
+
+            deleteBtn.onclick = function(){
+
+                clearInterval(interval);
+
+                li.remove();
+
+            };
+
+            li.appendChild(headerDiv);
+            li.appendChild(buttonDiv);
+            li.appendChild(status);
+
+            document.getElementById("taskList").appendChild(li);
+
+            taskInput.value = "";
+            timeInput.value = "";
+
+        }
+
+    </script>
+
+</body>
+
+</html>
