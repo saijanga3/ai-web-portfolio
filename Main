@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Student Record System</title>
+
+<style>
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:Arial,sans-serif;
+}
+
+body{
+    background:#f4f4f4;
+    padding:20px;
+}
+
+.container{
+    max-width:1000px;
+    margin:auto;
+    background:white;
+    padding:20px;
+    border-radius:10px;
+    box-shadow:0 0 10px rgba(0,0,0,0.2);
+}
+
+h1{
+    text-align:center;
+    margin-bottom:20px;
+}
+
+.form-group{
+    display:grid;
+    grid-template-columns:repeat(4,1fr);
+    gap:10px;
+    margin-bottom:20px;
+}
+
+input{
+    padding:10px;
+    border:1px solid #ccc;
+    border-radius:5px;
+}
+
+button{
+    padding:10px;
+    border:none;
+    border-radius:5px;
+    cursor:pointer;
+    color:white;
+}
+
+.add-btn{
+    background:#28a745;
+}
+
+.edit-btn{
+    background:#ffc107;
+    color:black;
+}
+
+.delete-btn{
+    background:#dc3545;
+}
+
+table{
+    width:100%;
+    border-collapse:collapse;
+}
+
+table th,
+table td{
+    border:1px solid #ddd;
+    padding:10px;
+    text-align:center;
+}
+
+table th{
+    background:#007bff;
+    color:white;
+}
+
+@media(max-width:768px){
+    .form-group{
+        grid-template-columns:1fr;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+    <h1>🎓 Student Record System</h1>
+
+    <div class="form-group">
+        <input type="text" id="name" placeholder="Student Name">
+        <input type="number" id="age" placeholder="Age">
+        <input type="text" id="course" placeholder="Course">
+        <input type="email" id="email" placeholder="Email">
+    </div>
+
+    <button class="add-btn" onclick="addStudent()">
+        Add Student
+    </button>
+
+    <br><br>
+
+    <table>
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Name</th>
+                <th>Age</th>
+                <th>Course</th>
+                <th>Email</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+
+        <tbody id="studentTable">
+        </tbody>
+    </table>
+
+</div>
+
+<script>
+
+let students = JSON.parse(localStorage.getItem("students")) || [];
+let editIndex = -1;
+
+function displayStudents(){
+
+    let table = document.getElementById("studentTable");
+    table.innerHTML = "";
+
+    students.forEach((student,index)=>{
+
+        table.innerHTML += `
+        <tr>
+            <td>${index+1}</td>
+            <td>${student.name}</td>
+            <td>${student.age}</td>
+            <td>${student.course}</td>
+            <td>${student.email}</td>
+
+            <td>
+                <button class="edit-btn"
+                onclick="editStudent(${index})">
+                Edit
+                </button>
+
+                <button class="delete-btn"
+                onclick="deleteStudent(${index})">
+                Delete
+                </button>
+            </td>
+        </tr>
+        `;
+    });
+
+    localStorage.setItem(
+        "students",
+        JSON.stringify(students)
+    );
+}
+
+function addStudent(){
+
+    let name=document.getElementById("name").value;
+    let age=document.getElementById("age").value;
+    let course=document.getElementById("course").value;
+    let email=document.getElementById("email").value;
+
+    if(name==="" || age==="" || course==="" || email===""){
+        alert("Please fill all fields");
+        return;
+    }
+
+    let student={
+        name,
+        age,
+        course,
+        email
+    };
+
+    if(editIndex===-1){
+        students.push(student);
+    }
+    else{
+        students[editIndex]=student;
+        editIndex=-1;
+    }
+
+    clearForm();
+    displayStudents();
+}
+
+function editStudent(index){
+
+    document.getElementById("name").value =
+        students[index].name;
+
+    document.getElementById("age").value =
+        students[index].age;
+
+    document.getElementById("course").value =
+        students[index].course;
+
+    document.getElementById("email").value =
+        students[index].email;
+
+    editIndex=index;
+}
+
+function deleteStudent(index){
+
+    if(confirm("Delete Student Record?")){
+        students.splice(index,1);
+        displayStudents();
+    }
+}
+
+function clearForm(){
+
+    document.getElementById("name").value="";
+    document.getElementById("age").value="";
+    document.getElementById("course").value="";
+    document.getElementById("email").value="";
+}
+
+displayStudents();
+
+</script>
+
+</body>
+</html>
